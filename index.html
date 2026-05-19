@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,10 +65,9 @@ display:none;
 </head>
 
 <body>
-
 <div class="header">
-<h1>Delivery Express ישראל</h1>
-<p>Экспресс-доставка по Израилю</p>
+<h1 id="title">Delivery Express ישראל</h1>
+<p id="subtitle">Экспресс-доставка по Израилю</p>
 </div>
 
 <div class="container">
@@ -91,9 +90,9 @@ display:none;
   <option>Техника</option>
 </select>
 
-<select id="speed">
+<seplect id="speed">
   <option>Экспресс 60 минут</option>
-  <option>2 часа</option>
+  <o oh ption>2 часа</option>
   <option>Сегодня</option>
 </select>
 
@@ -150,7 +149,35 @@ return
 document.getElementById('success').style.display='block'
 
 }
+const lang = navigator.language || navigator.userLanguage
 
+if(lang.includes('he')){
+
+document.getElementById('title').innerText =
+'Delivery Express ישראל'
+
+document.getElementById('subtitle').innerText =
+'משלוחים מהירים בישראל'
+
+document.querySelector('h2').innerText =
+'צור משלוח'
+
+document.getElementById('name').placeholder =
+'השם שלך'
+
+document.getElementById('phone').placeholder =
+'טלפון'
+
+document.getElementById('pickup').placeholder =
+'מאיפה לאסוף'
+
+document.getElementById('delivery').placeholder =
+'לאן לשלוח'
+
+document.querySelector('.btn').innerText =
+'הזמן שליח'
+
+}
 </script>
 
 </body>

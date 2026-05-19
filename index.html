@@ -177,6 +177,32 @@ document.getElementById('delivery').placeholder =
 document.querySelector('.btn').innerText =
 'הזמן שליח'
 
+}const lang = Telegram.WebApp.initDataUnsafe.user?.language_code
+
+if(lang === "ru"){
+document.getElementById("title").innerText = "Delivery Express Израиль"
+document.getElementById("subtitle").innerText = "Экспресс-доставка по Израилю"
+
+document.querySelector("h2").innerText = "Создать доставку"
+
+document.getElementById("name").placeholder = "Ваше имя"
+document.getElementById("phone").placeholder = "Телефон"
+document.getElementById("pickup").placeholder = "Откуда забрать"
+document.getElementById("delivery").placeholder = "Куда доставить"
+
+document.querySelector(".btn").innerText = "Вызвать курьера"
+}else{
+document.getElementById("title").innerText = "Delivery Express ישראל"
+document.getElementById("subtitle").innerText = "משלוחים מהירים בישראל"
+
+document.querySelector("h2").innerText = "הזמן משלוח"
+
+document.getElementById("name").placeholder = "השם שלך"
+document.getElementById("phone").placeholder = "טלפון"
+document.getElementById("pickup").placeholder = "מאיפה לאסוף"
+document.getElementById("delivery").placeholder = "לאן לשלוח"
+
+document.querySelector(".btn").innerText = "הזמן שליח"
 }
 </script>
 

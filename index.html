@@ -1,195 +1,153 @@
-
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Delivery Express ישראל</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <style>
 body{
-margin:0;
 font-family:Arial,sans-serif;
 background:#f4f7fb;
-color:#111;
-direction:rtl;
+margin:0;
+padding:0;
 }
+
 .header{
 background:linear-gradient(135deg,#0057ff,#4f7cff);
 padding:24px;
 color:white;
 border-radius:0 0 28px 28px;
 }
+
 .container{
 padding:16px;
-padding-bottom:90px;
 }
+
 .card{
 background:white;
+padding:18px;
 border-radius:18px;
-padding:16px;
 margin-bottom:16px;
-box-shadow:0 4px 14px rgba(0,0,0,0.08);
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
-input, select{
+
+input,select{
 width:100%;
 padding:14px;
 margin-top:10px;
 border-radius:12px;
 border:1px solid #ddd;
 box-sizing:border-box;
-font-size:15px;
 }
+
 .btn{
-margin-top:14px;
 background:#0057ff;
 color:white;
-padding:15px;
-text-align:center;
+padding:16px;
 border-radius:14px;
+text-align:center;
+margin-top:16px;
 font-weight:bold;
 cursor:pointer;
 }
-.row{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-top:10px;
-}
-.tag{
-background:#eef3ff;
-padding:8px 12px;
-border-radius:999px;
-display:inline-block;
-margin-left:8px;
-font-size:12px;
-}
-.status{
-background:#e9fff0;
-color:#0f9d58;
-padding:10px;
-border-radius:12px;
-font-weight:bold;
-}
-.bottom{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:white;
-display:flex;
-justify-content:space-around;
+
+.success{
+background:#e8fff0;
 padding:14px;
-border-top:1px solid #ddd;
-}
-.small{
-font-size:13px;
-color:#666;
-}
-.price{
-font-size:28px;
-font-weight:bold;
-margin-top:10px;
+border-radius:12px;
+margin-top:14px;
+display:none;
 }
 </style>
 </head>
+
 <body>
 
 <div class="header">
 <h1>Delivery Express ישראל</h1>
-<p>משלוחים אקספרס בכל ישראל</p>
-
-<div class="tag">Telegram Mini App</div>
-<div class="tag">Israel</div>
-<div class="tag">Express Delivery</div>
+<p>Экспресс-доставка по Израилю</p>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h2>צור משלוח</h2>
 
-<input placeholder="מאיפה לאסוף">
-<input placeholder="לאן לשלוח">
+<h2>Создать доставку</h2>
 
-<select>
-<option>מסמכים</option>
-<option>מחשבים וציוד</option>
-<option>חבילה</option>
-<option>מטען שביר</option>
+<input id="pickup" placeholder="Откуда забрать">
+
+<input id="delivery" placeholder="Куда доставить">
+
+<select id="type">
+<option>Документы</option>
+<option>Посылка</option>
+<option>Техника</option>
 </select>
 
-<select>
-<option>אקספרס 60 דקות</option>
-<option>תוך שעתיים</option>
-<option>היום עד 18:00</option>
+<select id="speed">
+<option>Экспресс 60 минут</option>
+<option>2 часа</option>
+<option>Сегодня</option>
 </select>
 
-<div class="btn">חשב מחיר</div>
+<div class="btn" onclick="createOrder()">
+Вызвать курьера
 </div>
 
-<div class="card">
-<h3>עלות משלוח</h3>
-
-<div class="row">
-<div>מרחק</div>
-<div>9.7 ק״מ</div>
-</div>
-
-<div class="row">
-<div>זמן נסיעה</div>
-<div>25–35 דקות</div>
-</div>
-
-<div class="row">
-<div>סוג משלוח</div>
-<div>מסמכים עד 5 ק״ג</div>
-</div>
-
-<div class="price">₪49</div>
-
-<div class="btn">הזמן שליח</div>
-</div>
-
-<div class="card">
-<h3>משלוח פעיל</h3>
-
-<div class="status">השליח בדרך</div>
-
-<div class="row">
-<div>
-<b>דניאל</b><br>
-<span class="small">שליח</span>
-</div>
-<div>⭐ 4.9</div>
-</div>
-
-<hr>
-
-<div class="row">
-<div>הזמנה התקבלה</div>
-<div>09:21</div>
-</div>
-
-<div class="row">
-<div>החבילה נאספה</div>
-<div>09:34</div>
-</div>
-
-<div class="row">
-<div><b>בדרך ללקוח</b></div>
-<div><b>09:41</b></div>
+<div class="success" id="success">
+✅ Заказ успешно создан
 </div>
 
 </div>
 
 </div>
 
-<div class="bottom">
-<div>בית</div>
-<div>הזמנות</div>
-<div>שליח</div>
-<div>פרופיל</div>
-</div>
+<script>
+
+const supabaseUrl = 'https://ywoxqyisnidulclqopyy.supabase.co'
+
+const supabaseKey = 'sb_publishable_2vOsop3EFGgl20xazq7AUg_w-lroXbL'
+
+const client = supabase.createClient(supabaseUrl, supabaseKey)
+
+async function createOrder(){
+
+const pickup =
+document.getElementById('pickup').value
+
+const delivery =
+document.getElementById('delivery').value
+
+const type =
+document.getElementById('type').value
+
+const { data, error } =
+await client
+.from('orders')
+.insert([
+{
+pickup_address: pickup,
+delivery_address: delivery,
+delivery_type: type,
+status: 'new',
+price: 49
+}
+])
+
+if(error){
+alert('Ошибка')
+console.log(error)
+return
+}
+
+document.getElementById('success').style.display='block'
+
+}
+
+</script>
 
 </body>
 </html>

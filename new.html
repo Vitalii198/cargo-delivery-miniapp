@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Delivery Express Israel</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<style>
+
+body{
+margin:0;
+padding:0;
+background:#f4f7fb;
+font-family:Arial,sans-serif;
+}
+
+.header{
+background:linear-gradient(135deg,#0057ff,#4d7dff);
+padding:32px 24px;
+color:white;
+border-radius:0 0 32px 32px;
+}
+
+.header h1{
+margin:0;
+font-size:42px;
+}
+
+.header p{
+margin-top:12px;
+font-size:20px;
+opacity:0.9;
+}
+
+.container{
+padding:18px;
+}
+
+.card{
+background:white;
+padding:22px;
+border-radius:26px;
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+.card h2{
+font-size:34px;
+margin-bottom:24px;
+}
+
+.input{
+width:100%;
+padding:18px;
+margin-bottom:16px;
+border-radius:18px;
+border:2px solid #e5e7eb;
+font-size:20px;
+box-sizing:border-box;
+}
+
+.select{
+width:100%;
+padding:18px;
+margin-bottom:16px;
+border-radius:18px;
+border:2px solid #e5e7eb;
+font-size:20px;
+background:white;
+box-sizing:border-box;
+}
+
+.priceBox{
+font-size:34px;
+font-weight:bold;
+margin-top:10px;
+margin-bottom:18px;
+color:#0057ff;
+}
+
+.btn{
+width:100%;
+background:#0057ff;
+color:white;
+padding:22px;
+text-align:center;
+border-radius:22px;
+font-size:26px;
+font-weight:bold;
+border:none;
+}
+
+.success{
+display:none;
+background:#dcfce7;
+padding:16px;
+border-radius:18px;
+margin-top:18px;
+font-size:20px;
+color:#166534;
+text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>Delivery Express Israel 🇮🇱</h1>
+<p>Экспресс-доставка по Израилю</p>
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Создать доставку</h2>
+
+<input
+id="name"
+class="input"
+placeholder="Ваше имя"
+>
+
+<input
+id="phone"
+class="input"
+placeholder="Телефон"
+>
+
+<input
+id="pickup"
+class="input"
+placeholder="Откуда забрать"
+>
+
+<input
+id="delivery"
+class="input"
+placeholder="Куда доставить"
+>
+
+<textarea
+id="comment"
+class="input"
+placeholder="Комментарий для курьера"
+></textarea>
+
+<select
+id="type"
+class="select"
+>
+<option>Документы</option>
+<option>Посылка</option>
+<option>Техника</option>
+</select>
+
+<select
+id="speed"
+class="select"
+>
+<option>Экспресс 60 минут</option>
+<option>2 часа</option>
+<option>Сегодня</option>
+</select>
+
+<div
+id="priceBox"
+class="priceBox"
+>
+₪39
+</div>
+
+<button
+class="btn"
+onclick="createOrder()"
+>
+Вызвать курьера
+</button>
+
+<div
+id="success"
+class="success"
+>
+✅ Заказ успешно создан
+</div>
+
+</div>
+</div>
+
+<script>
+
+const supabaseUrl =
+'https://cwiawnqgxblwzsbxslvw.supabase.co'
+
+const supabaseKey =
+'PASTE_YOUR_SUPABASE_KEY'
+
+const client =
+supabase.createClient(
+supabaseUrl,
+supabaseKey
+)
+
+document.getElementById('type').onchange = updatePrice
+document.getElementById('speed').onchange = updatePrice
+
+function updatePrice(){
+
+const type =
+document.getElementById('type').value
+
+const speed =
+document.getElementById('speed').value
+
+let price = 39
+
+if(type === 'Посылка'){
+price = 49
+}
+
+if(type === 'Техника'){
+price = 69
+}
+
+if(speed === 'Экспресс 60 минут'){
+price += 30
+}
+
+if(speed === '2 часа'){
+price += 15
+}
+
+document.getElementById('priceBox').innerText =
+'₪' + price
+
+}
+
+updatePrice()
+
+async function createOrder(){
+
+const name =
+document.getElementById('name').value
+
+const phone =
+document.getElementById('phone').value
+
+const pickup =
+document.getElementById('pickup').value
+
+const delivery =
+document.getElementById('delivery').value
+
+const comment =
+document.getElementById('comment').value
+
+const type =
+document.getElementById('type').value
+
+const speed =
+document.getElementById('speed').value
+
+const price =
+document.getElementById('priceBox').innerText
+
+const { error } =
+await client
+.from('orders')
+.insert([
+{
+name:name,
+phone:phone,
+pickup_address:pickup,
+delivery_address:delivery,
+comment:comment,
+delivery_type:type,
+delivery_speed:speed,
+price:price,
+status:'new'
+}
+])
+
+if(error){
+alert('Ошибка: ' + error.message)
+return
+}
+
+document.getElementById('success').style.display = 'block'
+
+}
+
+</script>
+
+</body>
+</html>
